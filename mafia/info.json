@@ -1,0 +1,20 @@
+{
+    "author": [
+        "zcasavant (Zachary Casavant)"
+    ],
+    "bot_version": [
+        1,
+        0,
+        0
+    ],
+    "description": "Rocket League Mafia Bot",
+    "hidden": false,
+    "install_msg": "Thank you for installing the mafia cog.",
+    "required_cogs": {},
+    "requirements": [],
+    "short": "Play rocket league mafia with this bot",
+    "tags": [
+        "mafia",
+        "rocket league"
+    ]
+}
