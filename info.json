@@ -2,7 +2,7 @@
     "author" : ["Zcasavant (Plasmid#7536)"],
     "install_msg" : "Rocket League Mafia Bot",
     "name" : "Mafia",
-    "short" : "Play Rocket League Mafia with this bot",
+    "short" : "Play Rocket League Mafia with this bot.",
     "description" : "Play Rocket League Mafia with this bot.",
     "tags" : ["mafia", "rocket legue"]
 }
