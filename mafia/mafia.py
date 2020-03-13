@@ -109,7 +109,6 @@ class Mafia(commands.Cog):
         guild = ctx.guild
         role_mafia = self.get_mafia_role(ctx)
         current_players = []
-        role_test = "Test"
         
         for user in guild.members:
             if role_mafia in user.roles:
