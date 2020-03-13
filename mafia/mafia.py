@@ -32,7 +32,7 @@ class Mafia(commands.Cog):
         embed = discord.Embed(description=user.mention+" has left the game")
         await ctx.send(embed=embed)
 
-    @mafia.group()
+    @mafia.command()
     async def start(self, ctx):
         """Start Mafia Game"""
         guild = ctx.guild
@@ -51,18 +51,13 @@ class Mafia(commands.Cog):
         if channel_mafia is None:
             channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
 
-    @start.command()
+    @mafia.command()
     async def round(self, ctx, gamemode = "standard"):
         """Start Mafia Round"""
         if len(self.get_mafia_players(ctx)) == 0:
             await ctx.send("There are no players currently playing. Unable to start the round.")
             return
-        if gamemode == "standard":
-            await self.start_round(ctx, gamemode=gamemode)
-        elif gamemode == "complex":
-            await self.start_round(ctx, gamemode=gamemode)
-        else:
-            await ctx.send("Please choose `standard` or `complex` game mode")        
+        await self.start_round(ctx, gamemode=gamemode)    
 
     @mafia.command()
     async def end(self, ctx):
