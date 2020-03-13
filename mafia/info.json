@@ -1,20 +1,8 @@
 {
-    "Made By": [
-        "zcasavant (Zachary Casavant)"
-    ],
-    "bot_version": [
-        1,
-        0,
-        0
-    ],
-    "Description": "Rocket League Mafia Bot",
-    "hidden": false,
-    "install_msg": "Thank you for installing the mafia cog.",
-    "required_cogs": {},
-    "requirements": [],
-    "short": "Play rocket league mafia with this bot",
-    "tags": [
-        "mafia",
-        "rocket league"
-    ]
+    "author" : ["Zcasavant (Plasmid#7536)"],
+    "install_msg" : "Rocket League Mafia Bot",
+    "name" : "Mafia",
+    "short" : "Play Rocket League Mafia with this bot",
+    "description" : "Long description about your repository.",
+    "tags" : ["mafia", "rocket legue"]
 }
