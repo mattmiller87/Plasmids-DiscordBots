@@ -1,6 +1,10 @@
-from redbot.core import commands, config
+from redbot.core import commands, config, utils
 import discord
 import asyncio
+
+
+
+@
 
 class Mafia(commands.Cog):
     """My custom cog"""
@@ -122,7 +126,10 @@ class Mafia(commands.Cog):
         await channel_mafia.send("@Mafia", embed=embed)
 
         message = await channel_mafia.send("test")
-        await message.add_reaction(emojis[0])
-        await message.add_reaction(emojis[1])
-        
-        
+        utils.menus.start_adding_reactions(message, utils.predicates.ReactionPredicate.YES_OR_NO_EMOJIS)
+        pred = utils.predicates.ReactionPredicate.yes_or_no(message=message, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if pred.result is True:
+            await channel_mafia.send("true")
+        else:
+            await channel_mafia.send("false")
