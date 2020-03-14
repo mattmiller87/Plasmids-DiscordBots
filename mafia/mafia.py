@@ -38,7 +38,7 @@ class Mafia(commands.Cog):
     async def start(self, ctx, gamemode = "standard"):
         """Start Mafia Game"""
         
-        if len(self.get_mafia_players(ctx)) == 0:
+        if len(await self.get_mafia_players(ctx)) == 0:
             await ctx.send("There are no players currently playing. Unable to start the round.")
             return
 
@@ -53,7 +53,7 @@ class Mafia(commands.Cog):
         if channel_mafia is not None:
             await channel_mafia.delete()
 
-        for user in self.get_mafia_players(ctx):
+        for user in await self.get_mafia_players(ctx):
             await self.remove_mafia_role(ctx, user=user)
 
         await role_mafia.delete()
@@ -98,7 +98,7 @@ class Mafia(commands.Cog):
         if role in user.roles:
             await user.remove_roles(role)
 
-    def get_mafia_players(self, ctx):
+    async def get_mafia_players(self, ctx):
         guild = ctx.guild
         role_mafia = await self.get_mafia_role(ctx)
         current_players = []
