@@ -12,13 +12,14 @@ class Mafia(commands.Cog):
     @mafia.command()
     async def join(self, ctx):
         """Join Mafia Game"""
-        guild = ctx.guild
         user = ctx.author
         role_mafia = self.get_mafia_role(ctx)
-
-        if role_mafia is None: 
-            role_mafia = await guild.create_role(name="Mafia")
         
+        for role in user.roles:
+            if role.name == "Mafia":
+                await ctx.send("You are already in the game.")
+                return
+
         await user.add_roles(role_mafia)
 
         await ctx.send("You have joined the mafia game!")
@@ -26,6 +27,7 @@ class Mafia(commands.Cog):
     @mafia.command()
     async def leave(self, ctx):
         """Leave Mafia Game"""
+
         user = ctx.author
         await self.remove_mafia_role(ctx)
 
@@ -65,15 +67,28 @@ class Mafia(commands.Cog):
         for role in guild.roles:
             if role.name == "Mafia":
                 return role
-        return None
+
+        role_mafia = await guild.create_role(name="Mafia")
+
+        return role_mafia
 
     def get_mafia_channel(self, ctx):
         guild = ctx.guild
+        role_mafia = self.get_mafia_role(ctx)
 
         for channel in guild.text_channels:
             if channel.name == "mafia":
                 return channel
-        return None
+
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            role_mafia: discord.PermissionOverwrite(read_messages=True),
+            role_mafia: discord.PermissionOverwrite(send_messages=True)
+        }
+
+        channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
+        
+        return channel_mafia
 
     async def remove_mafia_role(self, ctx, user: discord.Member = None):
         if user is None:
@@ -95,23 +110,11 @@ class Mafia(commands.Cog):
         return current_players
         
     async def start_round(self, ctx, gamemode):
-        guild = ctx.guild
         user = ctx.author
-        role_mafia = self.get_mafia_role(ctx)
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
         current_players_mention = " "
-        if role_mafia is None:
-            role_mafia = await guild.create_role(name="Mafia")
-
-        overwrites = {
-            guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            role_mafia: discord.PermissionOverwrite(read_messages=True),
-            role_mafia: discord.PermissionOverwrite(send_messages=True)
-        }
-
-        if channel_mafia is None:
-            channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
+        emojis = ["😀", "☹️"]
 
         for user in current_players:
             current_players_mention = current_players_mention + user.mention + " "
@@ -122,10 +125,10 @@ class Mafia(commands.Cog):
         await channel_mafia.send("@Mafia", embed=embed)
 
         message = await channel_mafia.send("test")
-        utils.menus.start_adding_reactions(message, utils.predicates.ReactionPredicate.YES_OR_NO_EMOJIS)
-        pred = utils.predicates.ReactionPredicate.yes_or_no(message=message, user=user)
+        utils.menus.start_adding_reactions(message, emojis)
+
+        pred = utils.predicates.ReactionPredicate.with_emojis(emojis=emojis, message=message, user=user)
         await ctx.bot.wait_for("reaction_add", check=pred)
-        if pred.result is True:
-            await channel_mafia.send("true")
-        else:
-            await channel_mafia.send("false")
+        if pred.result is 1:
+            await channel_mafia.send("SadFace")
+
