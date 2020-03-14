@@ -61,7 +61,7 @@ class Mafia(commands.Cog):
         embed = discord.Embed(description="The game has ended", color=0xF50202)
         await ctx.send(embed=embed)
 
-    def get_mafia_role(self, ctx):
+    async def get_mafia_role(self, ctx):
         guild = ctx.guild
 
         for role in guild.roles:
@@ -72,7 +72,7 @@ class Mafia(commands.Cog):
 
         return role_mafia
 
-    def get_mafia_channel(self, ctx):
+    async def get_mafia_channel(self, ctx):
         guild = ctx.guild
         role_mafia = self.get_mafia_role(ctx)
 
@@ -90,7 +90,7 @@ class Mafia(commands.Cog):
         
         return channel_mafia
 
-    async def remove_mafia_role(self, ctx, user: discord.Member = None):
+    def remove_mafia_role(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
         role = self.get_mafia_role(ctx)
