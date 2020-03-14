@@ -101,7 +101,6 @@ class Mafia(commands.Cog):
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
         current_players_mention = " "
-        emojis = ['✅','❎']
         if role_mafia is None:
             role_mafia = await guild.create_role(name="Mafia")
 
