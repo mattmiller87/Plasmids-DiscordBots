@@ -35,11 +35,11 @@ class Mafia(commands.Cog):
     @mafia.command()
     async def start(self, ctx, gamemode = "standard"):
         """Start Mafia Game"""
-        guild = ctx.guild
         
         if len(self.get_mafia_players(ctx)) == 0:
             await ctx.send("There are no players currently playing. Unable to start the round.")
             return
+
         await self.start_round(ctx, gamemode=gamemode)    
 
     @mafia.command()
@@ -97,13 +97,11 @@ class Mafia(commands.Cog):
     async def start_round(self, ctx, gamemode):
         guild = ctx.guild
         role_mafia = self.get_mafia_role(ctx)
-
-        if role_mafia is None:
-            role_mafia = await guild.create_role(name="Mafia")
-
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
         current_players_mention = " "
+        if role_mafia is None:
+            role_mafia = await guild.create_role(name="Mafia")
 
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(read_messages=False),
@@ -122,4 +120,6 @@ class Mafia(commands.Cog):
         
         await channel_mafia.send("@Mafia", embed=embed)
 
-        
+        message = await channel_mafia.send("test")
+        await message.add_reaction('\u2705')
+        await message.add_reaction('\u274E') 
