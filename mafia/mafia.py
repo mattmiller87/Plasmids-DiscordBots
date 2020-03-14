@@ -33,27 +33,10 @@ class Mafia(commands.Cog):
         await ctx.send(embed=embed)
 
     @mafia.command()
-    async def start(self, ctx):
+    async def start(self, ctx, gamemode = "standard"):
         """Start Mafia Game"""
         guild = ctx.guild
-        role_mafia = self.get_mafia_role(ctx)
-        channel_mafia = self.get_mafia_channel(ctx)
-
-        if role_mafia is None:
-            role_mafia = await guild.create_role(name="Mafia")
-
-        overwrites = {
-            guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            role_mafia: discord.PermissionOverwrite(read_messages=True),
-            role_mafia: discord.PermissionOverwrite(send_messages=True)
-        }
-
-        if channel_mafia is None:
-            channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
-
-    @mafia.command()
-    async def round(self, ctx, gamemode = "standard"):
-        """Start Mafia Round"""
+        
         if len(self.get_mafia_players(ctx)) == 0:
             await ctx.send("There are no players currently playing. Unable to start the round.")
             return
@@ -112,9 +95,24 @@ class Mafia(commands.Cog):
         return current_players
         
     async def start_round(self, ctx, gamemode):
+        guild = ctx.guild
+        role_mafia = self.get_mafia_role(ctx)
+
+        if role_mafia is None:
+            role_mafia = await guild.create_role(name="Mafia")
+
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
         current_players_mention = " "
+
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            role_mafia: discord.PermissionOverwrite(read_messages=True),
+            role_mafia: discord.PermissionOverwrite(send_messages=True)
+        }
+
+        if channel_mafia is None:
+            channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
 
         for user in current_players:
             current_players_mention = current_players_mention + user.mention + " "
