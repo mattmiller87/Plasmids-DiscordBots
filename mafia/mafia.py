@@ -1,9 +1,9 @@
-from redbot.core import commands, config
+from redbot.core import commands, config, utils.menus
 import discord
+import asyncio
 
 class Mafia(commands.Cog):
     """My custom cog"""
-
 
     @commands.group()
     async def mafia(self, ctx):
@@ -100,6 +100,7 @@ class Mafia(commands.Cog):
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
         current_players_mention = " "
+        emojis = ['✅','❎']
         if role_mafia is None:
             role_mafia = await guild.create_role(name="Mafia")
 
@@ -121,5 +122,6 @@ class Mafia(commands.Cog):
         await channel_mafia.send("@Mafia", embed=embed)
 
         message = await channel_mafia.send("test")
-        await message.add_reaction('\u2705')
-        await message.add_reaction('\u274E') 
+        await start_adding_reactions(message, emojis)
+        
+        
