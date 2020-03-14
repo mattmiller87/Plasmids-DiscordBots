@@ -60,4 +60,5 @@ class Game:
     def get_roles(self, ctx):
         game_size = len(self.players)
 
+        await ctx.send("Test")
         
