@@ -1,5 +1,4 @@
 from redbot.core import commands, config
-from redbot.core.utils import menus
 import discord
 import asyncio
 
@@ -123,6 +122,7 @@ class Mafia(commands.Cog):
         await channel_mafia.send("@Mafia", embed=embed)
 
         message = await channel_mafia.send("test")
-        await start_adding_reactions(message, emojis)
+        await message.add_reaction(emojis[0])
+        await message.add_reaction(emojis[1])
         
         
