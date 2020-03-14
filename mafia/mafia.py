@@ -90,7 +90,7 @@ class Mafia(commands.Cog):
         
         return channel_mafia
 
-    def remove_mafia_role(self, ctx, user: discord.Member = None):
+    async def remove_mafia_role(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
         role = self.get_mafia_role(ctx)
