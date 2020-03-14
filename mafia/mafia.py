@@ -2,10 +2,6 @@ from redbot.core import commands, config, utils
 import discord
 import asyncio
 
-
-
-@
-
 class Mafia(commands.Cog):
     """My custom cog"""
 
