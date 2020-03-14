@@ -11,8 +11,7 @@ class Mafia(Cog):
     Main to host Rocket Leauge Mafia on guild
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self):
         self.config = Config.get_conf(self, identifier=926792766, force_registration=True)
         default_global = {}
         default_guild = {
