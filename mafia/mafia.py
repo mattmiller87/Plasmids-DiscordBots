@@ -96,6 +96,7 @@ class Mafia(commands.Cog):
         
     async def start_round(self, ctx, gamemode):
         guild = ctx.guild
+        user = ctx.author
         role_mafia = self.get_mafia_role(ctx)
         channel_mafia = self.get_mafia_channel(ctx)
         current_players = self.get_mafia_players(ctx)
@@ -123,7 +124,7 @@ class Mafia(commands.Cog):
 
         message = await channel_mafia.send("test")
         utils.menus.start_adding_reactions(message, utils.predicates.ReactionPredicate.YES_OR_NO_EMOJIS)
-        pred = utils.predicates.ReactionPredicate.yes_or_no(message=message, ctx.author)
+        pred = utils.predicates.ReactionPredicate.yes_or_no(message=message, user=user)
         await ctx.bot.wait_for("reaction_add", check=pred)
         if pred.result is True:
             await channel_mafia.send("true")
