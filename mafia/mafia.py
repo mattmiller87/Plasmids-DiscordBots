@@ -1,4 +1,5 @@
-from redbot.core import commands, config, utils.menus
+from redbot.core import commands, config
+from redbot.core.utils import menus
 import discord
 import asyncio
 
