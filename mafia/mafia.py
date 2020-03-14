@@ -13,7 +13,7 @@ class Mafia(commands.Cog):
     async def join(self, ctx):
         """Join Mafia Game"""
         user = ctx.author
-        role_mafia = self.get_mafia_role(ctx)
+        role_mafia = await self.get_mafia_role(ctx)
         
         for role in user.roles:
             if role.name == "Mafia":
@@ -47,8 +47,8 @@ class Mafia(commands.Cog):
     @mafia.command()
     async def end(self, ctx):
         """End Mafia Game"""
-        channel_mafia = self.get_mafia_channel(ctx)
-        role_mafia = self.get_mafia_role(ctx)
+        channel_mafia = await self.get_mafia_channel(ctx)
+        role_mafia = await self.get_mafia_role(ctx)
 
         if channel_mafia is not None:
             await channel_mafia.delete()
@@ -74,7 +74,7 @@ class Mafia(commands.Cog):
 
     async def get_mafia_channel(self, ctx):
         guild = ctx.guild
-        role_mafia = self.get_mafia_role(ctx)
+        role_mafia = await self.get_mafia_role(ctx)
 
         for channel in guild.text_channels:
             if channel.name == "mafia":
@@ -93,14 +93,14 @@ class Mafia(commands.Cog):
     async def remove_mafia_role(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
-        role = self.get_mafia_role(ctx)
+        role = await self.get_mafia_role(ctx)
 
         if role in user.roles:
             await user.remove_roles(role)
 
     def get_mafia_players(self, ctx):
         guild = ctx.guild
-        role_mafia = self.get_mafia_role(ctx)
+        role_mafia = await self.get_mafia_role(ctx)
         current_players = []
         
         for user in guild.members:
@@ -111,8 +111,8 @@ class Mafia(commands.Cog):
         
     async def start_round(self, ctx, gamemode):
         user = ctx.author
-        channel_mafia = self.get_mafia_channel(ctx)
-        current_players = self.get_mafia_players(ctx)
+        channel_mafia = await self.get_mafia_channel(ctx)
+        current_players = await self.get_mafia_players(ctx)
         current_players_mention = " "
         emojis = ["😀", "☹️"]
 
