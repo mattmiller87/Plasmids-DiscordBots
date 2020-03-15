@@ -271,7 +271,7 @@ class Game:
                 self.game_role = role
                 
                 try:
-                    self.game_role.edit(mentionable=True,
+                    await self.game_role.edit(mentionable=True,
                                         reason="(BOT)Mafia Game Role")
                     return
                 except (discord.Forbidden, discord.HTTPException):
@@ -302,7 +302,7 @@ class Game:
                 self.channel_category = category
 
                 try:
-                    self.channel_category.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
+                    await self.channel_category.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
                     return
                 except discord.Forbidden:
                     await ctx.send("Unable to modify category **{}**\n"
@@ -334,7 +334,7 @@ class Game:
                 self.village_channel = channel
                 
                 try:
-                    self.village_channel.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
+                    await self.village_channel.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
                     return
                 except discord.Forbidden:
                     await ctx.send("Unable to modify category **{}**\n"
