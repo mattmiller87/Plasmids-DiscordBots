@@ -405,7 +405,7 @@ class Game:
         msg = await self.village_channel.send(embed=embed)
         start_adding_reactions(msg, "🏁")
 
-        pred = ReactionPredicate.with_emojis(emojis="🏁")
+        pred = ReactionPredicate.with_emojis(emojis="🏁", message=msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
         
         if self.game_over:
