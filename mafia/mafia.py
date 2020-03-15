@@ -164,8 +164,6 @@ class Mafia(Cog):
             await ctx.send("Creating a new game...")
             self.games[guild.id] = Game(guild)
 
-        self.games[guild.id].setup(ctx)
-
         return self.games[guild.id]
 
     
