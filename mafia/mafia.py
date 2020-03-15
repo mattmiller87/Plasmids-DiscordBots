@@ -113,6 +113,22 @@ class Mafia(Cog):
         game.game_over = True
         await ctx.send("Game has been stopped")
 
+    
+    @commands.guild_only()
+    @mafia.command(name="players")
+    async def mafia_players(self, ctx: commands.Context):
+        """
+        Get Players of current game
+        """
+        string_mention = " "
+        game = self._get_game(ctx)
+
+        for player in game.players:
+            string_mention = string_mention + player.mention + " "
+
+        embed = discord.Embed(title="Players in the game", description=string_mention)
+        await ctx.send(embed=embed)
+
     async def _get_game(self, ctx: commands.Context):
         """
         Get game from current guild
