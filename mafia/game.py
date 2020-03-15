@@ -4,9 +4,6 @@ from typing import List, Set
 
 import discord
 from redbot.core import commands
-from redbot.core.utils.predicates import ReactionPredicate
-from redbot.core.utils.menus import start_adding_reactions
-
 from .player import Player
 from .role import Role, Town, Godfather
 
@@ -53,9 +50,6 @@ class Game:
             b. Await Game End
             c. Vote on Mafia
         6. Remove Leaving Players
-        7. Prompt new round
-            a. yes - start new round
-            b. no - clean up
         """
         # Assign Players in join_queue
         if await self._check_game_over_status():
@@ -102,18 +96,7 @@ class Game:
         if await self._check_game_over_status():
             return
      
-        embed = discord.Embed(title="Would you like to contiue?")
-        embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
-
-        msg = await self.village_channel.send(embed=embed)
-        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
-
-        pred = ReactionPredicate.yes_or_no(msg)
-        if pred.result:
-            await ctx.send("Continue Game")
-        else:
-            await ctx.send("End Game")
-            return
+        return
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """
