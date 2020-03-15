@@ -190,7 +190,7 @@ class Game:
 
         # Reset Variables
         self.roles = []
-        # self.players = [] Keeping players for tracking score and keep players unless end game
+        self.players = []
         self.join_queue = []
         self.leave_queue = []
 
@@ -364,7 +364,7 @@ class Game:
         return True
 
     async def _prompt_new_game(self, ctx):
-        embed = discord.Embed(title="Would you like to contiue?")
+        embed = discord.Embed(title="Would you like to continue?")
         embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
 
         msg = await self.village_channel.send(embed=embed)
