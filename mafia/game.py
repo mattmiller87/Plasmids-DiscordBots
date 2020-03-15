@@ -297,7 +297,7 @@ class Game:
             self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
         }
 
-        for category in ctx.guild.categoies:
+        for category in ctx.guild.categories:
             if "Rocket League Mafia" == category.name:
                 self.channel_category = category
 
