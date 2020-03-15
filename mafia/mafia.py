@@ -121,7 +121,7 @@ class Mafia(Cog):
         Get Players of current game
         """
         string_mention = " "
-        game = self._get_game(ctx)
+        game = await self._get_game(ctx)
 
         for player in game.players:
             string_mention = string_mention + player.mention + " "
