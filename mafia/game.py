@@ -61,7 +61,11 @@ class Game:
             return False            
             
         if len(self.players) == 0:
-            await ctx.send("No players to start the game!\n Join the game with `[p]mafia join`")
+            if self.village_channel is not None:
+                await self.village_channel.send("No players to start the game!\n"
+                                                "Join the game with `[p]mafia join`")
+            else:
+                await ctx.send("No players to start the game!\nJoin the game with `[p]mafia join`")
             return True
         
         self.started = True
