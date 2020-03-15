@@ -234,6 +234,7 @@ class Game:
         If no game_type game creates the roles based on number of players
         """
         self.roles = []
+        
         if game_type is None:
             for player_index in range(len(self.players)):
                 if player_index == len(self.players) - 1:
@@ -247,7 +248,7 @@ class Game:
         self.players.sort(key=lambda player: player.member.display_name.lower())
 
         if len(roles) != len(self.players):
-            await self.village_channel.send("Unhandled error - {}!={}".format(len(roles), len(self.players)))
+            await self.village_channel.send("Unhandled error - players!=roles")
             return False
 
         for index, player in enumerate(self.players):

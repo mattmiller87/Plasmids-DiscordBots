@@ -10,6 +10,7 @@ class Player:
         self.mention = member.mention
         self.role = None
         self.id = None
+        self.score = 0
 
     async def assign_role(self, role):
         """
