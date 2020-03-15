@@ -102,7 +102,8 @@ class Game:
         if await self._check_game_over_status():
             return
 
-        if await self._new_round_prompt():
+        start_new_round = await self._new_round_prompt()
+        if start_new_round:
             await self.start(ctx)
         else:
             await self.cleanup()
