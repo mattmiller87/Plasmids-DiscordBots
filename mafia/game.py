@@ -91,8 +91,9 @@ class Game:
         if not await self._remove_leaving_players(ctx):
             return False
 
-        # Prompt New Round
         await self._check_game_over_status()
+        return True
+
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """

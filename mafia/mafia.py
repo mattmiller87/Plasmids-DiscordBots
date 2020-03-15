@@ -107,7 +107,7 @@ class Mafia(Cog):
 
         if not await game.start(ctx):
             await ctx.send("Unhandled Error - check previous messages for issues")
-            pass
+            return
         
         embed = discord.Embed(title="Would you like to contiue?")
         embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
