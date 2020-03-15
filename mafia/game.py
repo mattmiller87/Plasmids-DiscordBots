@@ -55,33 +55,39 @@ class Game:
         """
         Have a member join a game
         """
+        player = await self.get_player_by_member(member)
+
+        if player is not None:
+            embed = discord.Embed(description=player.mention+" is already in the game")
+            await channel.send(embed=embed)
+            return
+
         if self.started:
-            await channel.send("Game has already started.\n{} will be added at the start of the next round.".format(member.mention))
+            embed = discord.Embed(description="Game has already started. "+player.mention+" will be added at the start of the next round")
+            await channel.send(embed=embed)
             self.join_queue.append(Player(member))
             return
 
-        if await self.get_player_by_member(member) is not None:
-            await channel.send("{} is already in the game!".format(member.mention))
-
         self.players.append(Player(member))
 
-        await self.give_game_role(member, channel) 
-   
+        await self._join(member, channel)
+
     async def leave(self, member: discord.Member, channel: discord.TextChannel = None):
         """
         Have a member quit a game
         """
         player = await self.get_player_by_member(member)
 
+        if await player is None:
+            embed = discord.Embed(description=player.mention+" isn't in the game")
+            await channel.send(embed=embed)
+            return
+            
         if self.started:
             embed = discord.Embed(description="Game is in progress.\n"+player.mention+" will be removed at the end of the round")
             await channel.send(embed=embed)
             self.leave_queue.append(self.get_player_by_member(member))
             return
-
-        if await player is None:
-            embed = discord.Embed(description=player.mention+" isn't in the game")
-            await channel.send(embed=embed)
         
         await self._leave(member, channel)
         
@@ -95,6 +101,15 @@ class Game:
         await member.remove_roles(*[self.game_role])
         embed = discord.Embed(description=player.mention+" has left the game")
         await channel.send(embed=embed)
+
+    async def _join(self, member, channel):
+        player = self.get_player_by_member(member)
+
+        await self.give_game_role(member, channel) 
+
+        embed = discord.Embed(description=player.mention+" has joined the game")
+        await channel.send(embed=embed)
+   
 
     async def give_game_role(self, member, channel):
         if self.game_role is not None:
