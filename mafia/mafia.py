@@ -147,6 +147,8 @@ class Mafia(Cog):
             game.game_over = True
             await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
 
+        game.players = []
+
     @commands.guild_only()
     @mafia.command(name="players")
     async def mafia_players(self, ctx: commands.Context):

@@ -179,7 +179,7 @@ class Game:
 
         # Reset Variables
         self.roles = []
-        self.players = []
+        # self.players = [] Keeping players for tracking score and keep players unless end game
         self.join_queue = []
         self.leave_queue = []
 
