@@ -38,7 +38,7 @@ class Player:
             color = 9807270
 
         embed = discord.Embed(title="You are " + self.role.name,
-                            description=self.role.get_start_message,
+                            description=self.role.game_start_message,
                             color=color)
 
         await self.send_dm(embed)
