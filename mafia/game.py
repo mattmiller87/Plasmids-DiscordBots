@@ -84,7 +84,7 @@ class Game:
                 return False
     
         # Create and Assign Game Roles
-        if not await self._set_roles(self.game_type):
+        if not await self._set_roles():
             return False
 
         if not await self._assign_roles(self.roles):
@@ -225,11 +225,11 @@ class Game:
         embed = discord.Embed(description=member.mention+" has joined the game")
         await channel.send(embed=embed)
 
-    async def _set_roles(self, game_type):
+    async def _set_roles(self, game_type=None):
         """
         If no game_type game creates the roles based on number of players
         """
-        for player_index in range(0, len(self.players)):
+        for player_index in range(1, len(self.players)):
             await self.village_channel.send(player_index)
             if player_index == len(self.players):
                 self.roles.append(Godfather())
