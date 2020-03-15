@@ -61,8 +61,9 @@ class Mafia(Cog):
         Joins a game of Mafia
         """
         if ctx.guild.id not in self.games or self.games[ctx.guild.id].game_over:
-            await ctx.send("No game to quit!")
+            await ctx.send("No game to join!\nCreate a new one with `[p]mafia new`")
             return
+            
         game = await self._get_game(ctx)
 
         if not game:
