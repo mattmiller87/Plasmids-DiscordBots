@@ -102,12 +102,12 @@ class Game:
         if await self._check_game_over_status():
             return
 
-        start_new_round = await self._new_round_prompt()
-        if start_new_round:
-            await self.start(ctx)
-        else:
-            await self.cleanup()
-            return
+        await self._new_round_prompt()
+        # if start_new_round:
+            # await self.start(ctx)
+        # else:
+           # await self.cleanup()
+           # return
 
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
