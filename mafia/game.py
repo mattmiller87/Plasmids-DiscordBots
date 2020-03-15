@@ -101,15 +101,12 @@ class Game:
         # Prompt New Round
         if await self._check_game_over_status():
             return
-
-        
+     
         if await self._new_round_prompt():
-            await asyncio.sleep(10)
-            await self.start(ctx)
+            ctx.send("Continue Game")
         else:
-           await self.cleanup()
-           return
-
+            await self.cleanup()
+            return
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """
