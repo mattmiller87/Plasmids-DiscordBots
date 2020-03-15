@@ -388,4 +388,8 @@ class Game:
             await self.cleanup()
     
     async def _start_round(self):
-        pass
+        tasks = []
+        for player in self.players:
+            tasks.append(asyncio.create_task(player._start_round()))
+        
+        await asyncio.gather(tasks)

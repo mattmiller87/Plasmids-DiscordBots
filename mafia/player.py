@@ -28,7 +28,7 @@ class Player:
         except discord.Forbidden:
             await self.role.game.village_channel.send("Couldn't DM to {}".format(self.mention))
     
-    async def _start_round(self, data=None):
+    async def _start_round(self):
 
         if self.role.alignment == 1:
             color = 3066993
