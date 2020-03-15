@@ -159,7 +159,7 @@ class Game:
                 return player
         return None
 
-    async def assign_all_discord_role(self, ctx, role):
+    async def assign_all_discord_role(self, ctx, role: discord.Role):
         try:
             for player in self.players:
                 if role not in player.member.roles:
@@ -169,7 +169,7 @@ class Game:
             return False
         return True
 
-    async def assign_member_discord_role(self, member, channel, role):
+    async def assign_member_discord_role(self, member, channel, role: discord.Role):
         try:
             if role not in member.roles:
                 await member.add_roles(role)
