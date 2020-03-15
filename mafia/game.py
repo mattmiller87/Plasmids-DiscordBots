@@ -103,9 +103,9 @@ class Game:
             return
      
         if await self._new_round_prompt():
-            ctx.send("Continue Game")
+            await ctx.send("Continue Game")
         else:
-            await self.cleanup()
+            await ctx.send("End Game")
             return
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
