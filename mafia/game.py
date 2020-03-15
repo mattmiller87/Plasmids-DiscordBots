@@ -229,13 +229,12 @@ class Game:
         """
         If no game_type game creates the roles based on number of players
         """
-        if game_type is None:
-            for player_index in range(1, len(self.players)):
-                await self.village_channel.send(player_index)
-                if player_index == len(self.players):
-                    self.roles.append(Godfather())
-                else:
-                    self.roles.append(Town())
+        for player_index in range(0, len(self.players)):
+            await self.village_channel.send(player_index)
+            if player_index == len(self.players):
+                self.roles.append(Godfather())
+            else:
+                self.roles.append(Town())
         return True
 
     async def _assign_roles(self, roles):
