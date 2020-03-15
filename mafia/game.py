@@ -99,6 +99,11 @@ class Game:
         await self._check_game_over_status()
 
         await self._start_round() # Send players the DM
+
+        await self._check_game_over_status()
+
+        if not await self._wait_for_game(ctx):
+            return False
         
         self.started = False
 
@@ -393,3 +398,19 @@ class Game:
             tasks.append(asyncio.create_task(player._start_round()))
         
         await asyncio.gather(*tasks)
+
+    async def _wait_for_game(self, ctx):
+        embed = discord.Embed(title="Respond with the 🏁 when the game is done")
+
+        msg = await self.village_channel.send(embed=embed)
+        start_adding_reactions(msg, "🏁")
+
+        pred = ReactionPredicate.with_emojis(emojis="🏁")
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        
+        if self.game_over:
+            return False
+        
+        await msg.delete()
+
+        return pred.result
