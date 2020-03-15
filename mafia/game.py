@@ -325,6 +325,10 @@ class Game:
 
         pred = ReactionPredicate.yes_or_no(msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
+        
+        if self.game_over:
+            return False
+        
         return pred.result
 
     async def _check_game_over_status(self):
