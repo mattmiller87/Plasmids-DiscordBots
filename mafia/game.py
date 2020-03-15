@@ -60,6 +60,10 @@ class Game:
         if not await self._add_queued_players(ctx):
             return False            
             
+        if len(self.players) == 0:
+            await ctx.send("No players to start the game!\n Join the game with `[p]mafia join`")
+            return True
+        
         self.started = True
 
         # Create and Assign Discord Role
@@ -89,12 +93,15 @@ class Game:
         # Game Itself
         if await self._check_game_over_status():
             return
+        
+        self.started = False
 
         # Remove Leaving Players
         if not await self._remove_leaving_players(ctx):
             return False
 
         await self._check_game_over_status()
+        
         if await self._prompt_new_game(ctx):
             await self.start(ctx)
         else:

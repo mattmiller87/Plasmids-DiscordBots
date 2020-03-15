@@ -102,10 +102,6 @@ class Mafia(Cog):
         if game is None:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
             return
-
-        if len(game.players) == 0:
-            await ctx.send("No players to start the game!\n Join the game with `[p]mafia join`")
-            return
         
         if game.game_over:
             game.game_over = False
