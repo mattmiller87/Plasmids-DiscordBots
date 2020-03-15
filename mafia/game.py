@@ -50,6 +50,7 @@ class Game:
             a. yes - start new round
             b. no - clean up
         """
+        self.started = True
         await asyncio.sleep(30)
 
         # Assign Players in join_queue
