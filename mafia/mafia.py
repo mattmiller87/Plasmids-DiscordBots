@@ -51,8 +51,11 @@ class Mafia(Cog):
 
         if game is None:
             await ctx.send("Failed to create a new game")
+        elif game.started:
+            await ctx.send("Game is in progress! To join use `[p]mafia join`\n"
+                            "You will be added at the start of the next round")
         else:
-            await ctx.send("Game is ready to join! Use `[p]mafia join`")
+            await ctx.send("Game is ready to join! You can join with `[p]mafia join`")
 
     @commands.guild_only()
     @mafia.command(name="join")
@@ -64,10 +67,6 @@ class Mafia(Cog):
 
         if game is None:
             await ctx.send("No game to join!\nCreate a new one with `[p]mafia new`")
-            return
-
-        if game.game_over:
-            await ctx.send("Game is stopped.\nStart the game again with `[p]mafia start`")
             return
 
         await game.join(ctx.author, ctx.channel)
@@ -97,33 +96,28 @@ class Mafia(Cog):
         """
         game = await self._get_game(ctx)
 
-        if game is None:
+        if game is None or game.game_over:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
             return
-
-        if game.game_over:
-            game.game_over = False
+           
 
         await game.start(ctx)
 
     @commands.guild_only()
-    @mafia.command(name="stop")
-    async def mafia_stop(self, ctx: commands.Context):
+    @mafia.command(name="end")
+    async def mafia_end(self, ctx: commands.Context):
         """
-        Attempts to stop the game
+        Attempts to end the game
         """
         game = await self._get_game(ctx)
 
         if game is None:
-            await ctx.send("No game to stop!")
-            return
-        
-        if game.game_over:
-            await ctx.send("Game is already stopped.")
+            await ctx.send("No game to end!")
             return
 
         game.game_over = True
-        await ctx.send("Game has been stopped")
+        game.cleanup(ctx)
+        await ctx.send("Game has ended.\nYou can start a new game with `[p]mafia new`")
 
     @commands.guild_only()
     @mafia.command(name="players")

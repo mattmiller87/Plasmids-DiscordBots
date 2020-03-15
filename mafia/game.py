@@ -15,8 +15,8 @@ class Game:
 
     roles: List[Role]
     players: List[Player]
-    join_queue: List[Player]
-    leave_queue: List[Player]
+    join_queue: List[discord.Member]
+    leave_queue: List[discord.Member]
 
     def __init__(self, guild: discord.Guild):
         self.guild = guild
@@ -50,7 +50,16 @@ class Game:
             a. yes - start new round
             b. no - clean up
         """
-        await ctx.send("start game")
+        await asyncio.sleep(30)
+
+        # Assign Players in join_queue
+        if len(self.join_queue > 0):
+            for member in self.join_queue:
+                await self._join(member, self.village_channel)
+            self.join_queue = []
+        
+        # Assign Roles
+
 
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """
@@ -59,14 +68,14 @@ class Game:
         player = await self.get_player_by_member(member)
 
         if player is not None:
-            embed = discord.Embed(description=player.mention+" is already in the game")
+            embed = discord.Embed(description=player.mention+" is already in the game!")
             await channel.send(embed=embed)
             return
 
         if self.started:
             embed = discord.Embed(description="Game has already started. "+player.mention+" will be added at the start of the next round")
             await channel.send(embed=embed)
-            self.join_queue.append(Player(member))
+            self.join_queue.append(member)
             return
 
         await self._join(member, channel)
@@ -85,7 +94,7 @@ class Game:
         if self.started:
             embed = discord.Embed(description="Game is in progress.\n"+player.mention+" will be removed at the end of the round")
             await channel.send(embed=embed)
-            self.leave_queue.append(self.get_player_by_member(member))
+            self.leave_queue.append(member)
             return
         
         await self._leave(member, channel)
