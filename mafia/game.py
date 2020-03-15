@@ -1,12 +1,12 @@
 import asyncio
 import random
-from typing import List, Set
+from typing import List
 
 import discord
 from redbot.core import commands
 
 from .player import Player
-from .role import Role
+from .role import Role, Town, Godfather
 
 class Game:
     """
@@ -15,50 +15,123 @@ class Game:
 
     roles: List[Role]
     players: List[Player]
+    join_queue: List[Player]
+    leave_queue: List[Player]
 
-    def __init__(self, guild: discord.Guild, role: discord.Role = None,
-                category: discord.CategoryChannel = None, village: discord.TextChannel = None):
+    def __init__(self, guild: discord.Guild):
         self.guild = guild
         
         self.roles = []
         self.players = []
+        self.join_queue = []
+        self.leave_queue = []
 
         self.vote_totals = {}
 
         self.started = False
-
-        self.vote_time = False
+        self.game_over = False
+        self.can_vote = False
         self.round_count = 0
 
-        self.game_role = role
-        self.channel_category = category
-        self.village_channel = village
+        self.game_role = None
+        self.channel_category = None
+        self.village_channel = None
 
-        self.to_delete = Set()
-
-    async def setup(self, ctx: commands.Context):
+    async def start(self, ctx: commands.Context):
         """
         Setup
-
-        1. Assign Roles
-        2. Create Channels
-          a. Channel Permissions
-        3. Start Game
+        1. Add New Players
+        2. Assign Roles
+        3. Create Channels
+            a. Channel Permissions
+        4. Start Game
+        5. Remove Leaving Players
+        7. Prompt new round
+            a. yes - start new round
+            b. no - clean up
         """
-        self.get_roles(ctx)
 
-        if self.game_role is None:
+    async def join(self, member: discord.Member, channel: discord.TextChannel):
+        """
+        Have a member join a game
+        """
+        if self.started:
+            await channel.send("Game has already started.\n{} will be added at the start of the next round.".format(member.mention))
+            self.join_queue.append(Player(member))
+            return
+
+        if await self.get_player_by_member(member) is not None:
+            await channel.send("{} is already in the game!".format(member.mention))
+
+        self.players.append(Player(member))
+
+        await self.give_game_role(member, channel) 
+   
+    async def leave(self, member: discord.Member, channel: discord.TextChannel = None):
+        """
+        Have a member quit a game
+        """
+        player = await self.get_player_by_member(member)
+
+        if self.started:
+            embed = discord.Embed(description="Game is in progress.\n"+player.mention+" will be removed at the end of the round")
+            await channel.send(embed=embed)
+            self.leave_queue.append(self.get_player_by_member(member))
+            return
+
+        if await player is None:
+            embed = discord.Embed(description=player.mention+" isn't in the game")
+            await channel.send(embed=embed)
+        
+        await self._leave(member, channel)
+        
+    async def _leave(self, member, channel):
+        """
+        Remove Roles and Permisions
+        """
+        player = await self.get_player_by_member(member)
+
+        self.players = [player for player in self.players if player.member != member]
+        await member.remove_roles(*[self.game_role])
+        embed = discord.Embed(description=player.mention+" has left the game")
+        await channel.send(embed=embed)
+
+    async def give_game_role(self, member, channel):
+        if self.game_role is not None:
             try:
-                self.game_role = await ctx.guild.create_role(name="Mafia Players", 
-                                                            mentionable=True,  
-                                                            reason="(BOT) Mafia game role")
-                self.to_delete.add(self.game_role)
-            except (discord.Forbidden, discord.HTTPException):
-                await ctx.send("Issue creating game role, cannot start the game")
+                await member.add_roles(*[self.game_role])
+            except discord.Forbidden:
+                await channel.send(
+                    "Unable to add role **{}**\nBot is missing `manage_roles` permissions".format(self.game_role.name))
+
+    async def get_player_by_member(self, member):
+        """
+        Return Player by member
+        """
+        for player in self.players:
+            if player.member == member:
+                return player
+        return None
+
+    async def set_roles(self):
+        """
+        Creates the roles based on number of players
+        """
+        for player_index in range(len(self.players)):
+            if player_index == len(self.players) - 1:
+                self.roles.append(Godfather())
+            else:
+                self.roles.append(Town())
+
+    async def assign_roles(self):
+        random.shuffle(self.roles)
+        self.players.sort(key=lambda player: player.member.display_name.lower())
+
+        if len(self.roles) != len(self.players):
+            await self.village_channel.send("Unhandled error - roles!=players")
             return False
 
-    def get_roles(self, ctx):
-        game_size = len(self.players)
+        for index, player in enumerate(self.players):
+            await self.players[index].assign_role(self.roles[index])
 
-        await ctx.send("Test")
-        
+            await player.assign_id(index)

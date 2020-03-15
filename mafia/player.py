@@ -18,8 +18,11 @@ class Player:
         role.player = self
         self.role = role
 
+    async def assign_id(self, target_id):
+        self.id = target_id
+
     async def send_dm(self, message):
         try:
-            await self.member.send(message)  # Lets do embeds later
+            await self.member.send(message)
         except discord.Forbidden:
             await self.role.game.village_channel.send("Couldn't DM to {}".format(self.mention))
