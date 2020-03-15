@@ -392,4 +392,4 @@ class Game:
         for player in self.players:
             tasks.append(asyncio.create_task(player._start_round()))
         
-        await asyncio.gather(tasks)
+        await asyncio.gather(*tasks)
