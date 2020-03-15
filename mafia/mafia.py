@@ -48,6 +48,7 @@ class Mafia(Cog):
         Create new game to join
         """
         game = await self._new_game(ctx)
+
         if game is None:
             await ctx.send("Failed to create a new game")
         else:
@@ -63,6 +64,10 @@ class Mafia(Cog):
 
         if game is None:
             await ctx.send("No game to join!\nCreate a new one with `[p]mafia new`")
+            return
+
+        if game.game_over:
+            await ctx.send("Game is stopped.\nStart the game again with `[p]mafia start`")
             return
 
         await game.join(ctx.author, ctx.channel)
@@ -88,13 +93,16 @@ class Mafia(Cog):
     @mafia.command(name="start")
     async def mafia_start(self, ctx: commands.Context):
         """
-        Attempts to start the game
+        Attempts to start the game. Restarts game if stopped
         """
         game = await self._get_game(ctx)
 
         if game is None:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
             return
+
+        if game.game_over:
+            game.game_over = False
 
         await game.start(ctx)
 
@@ -110,10 +118,13 @@ class Mafia(Cog):
             await ctx.send("No game to stop!")
             return
         
+        if game.game_over:
+            await ctx.send("Game is already stopped.")
+            return
+
         game.game_over = True
         await ctx.send("Game has been stopped")
 
-    
     @commands.guild_only()
     @mafia.command(name="players")
     async def mafia_players(self, ctx: commands.Context):
@@ -138,9 +149,9 @@ class Mafia(Cog):
         if guild is None:
             await ctx.send("Cannot do this command from PM!")
             return None
-        if guild.id not in self.games or self.games[guild.id].game_over:
+        if guild.id not in self.games:
             return None
-        
+
         return self.games[guild.id]
 
     async def _new_game(self, ctx: commands.Context):

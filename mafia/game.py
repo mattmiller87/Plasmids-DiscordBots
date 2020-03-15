@@ -69,8 +69,6 @@ class Game:
             self.join_queue.append(Player(member))
             return
 
-        self.players.append(Player(member))
-
         await self._join(member, channel)
 
     async def leave(self, member: discord.Member, channel: discord.TextChannel = None):
@@ -91,29 +89,31 @@ class Game:
             return
         
         await self._leave(member, channel)
+
+        embed = discord.Embed(description=player.mention+" has left the game")
+        await channel.send(embed=embed)
         
     async def _leave(self, member, channel):
         """
         Remove Roles and Permisions
         """
         player = await self.get_player_by_member(member)
-
+        
         self.players = [player for player in self.players if player.member != member]
 
         if self.game_role is not None:
             await member.remove_roles(*[self.game_role])
-        
-        embed = discord.Embed(description=player.mention+" has left the game")
-        await channel.send(embed=embed)
 
     async def _join(self, member, channel):
-        player = await self.get_player_by_member(member)
+        """
+        Add Roles and add to game
+        """
+        self.players.append(Player(member))
 
         await self.give_game_role(member, channel) 
-
-        embed = discord.Embed(description=player.mention+" has joined the game")
+        
+        embed = discord.Embed(description=member.mention+" has joined the game")
         await channel.send(embed=embed)
-   
 
     async def give_game_role(self, member, channel):
         if self.game_role is not None:
