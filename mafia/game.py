@@ -229,9 +229,9 @@ class Game:
         """
         If no game_type game creates the roles based on number of players
         """
-        for player_index in range(1, len(self.players)):
+        for player_index in range(len(self.players)):
             await self.village_channel.send(player_index)
-            if player_index == len(self.players):
+            if player_index == len(self.players) - 1:
                 self.roles.append(Godfather())
             else:
                 self.roles.append(Town())
