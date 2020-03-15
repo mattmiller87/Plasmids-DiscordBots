@@ -231,6 +231,7 @@ class Game:
         """
         if game_type is None:
             for player_index in range(1, len(self.players)):
+                await self.village_channel.send(player_index)
                 if player_index == len(self.players):
                     self.roles.append(Godfather())
                 else:
