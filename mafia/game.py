@@ -82,7 +82,7 @@ class Game:
             embed = discord.Embed(description=player.mention+" isn't in the game")
             await channel.send(embed=embed)
             return
-            
+
         if self.started:
             embed = discord.Embed(description="Game is in progress.\n"+player.mention+" will be removed at the end of the round")
             await channel.send(embed=embed)
@@ -103,7 +103,7 @@ class Game:
         await channel.send(embed=embed)
 
     async def _join(self, member, channel):
-        player = self.get_player_by_member(member)
+        player = await self.get_player_by_member(member)
 
         await self.give_game_role(member, channel) 
 
