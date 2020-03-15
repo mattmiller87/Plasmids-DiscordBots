@@ -52,8 +52,7 @@ class Game:
         6. Remove Leaving Players
         """
         # Assign Players in join_queue
-        if await self._check_game_over_status():
-            return
+        await self._check_game_over_status()
         
         if not await self._add_queued_players(ctx):
             return False            
@@ -93,10 +92,7 @@ class Game:
             return False
 
         # Prompt New Round
-        if await self._check_game_over_status():
-            return
-     
-        return
+        await self._check_game_over_status()
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """
@@ -313,5 +309,3 @@ class Game:
     async def _check_game_over_status(self):
         if self.game_over:
             await self.cleanup()
-            return True
-        return False
