@@ -162,16 +162,16 @@ class Game:
     async def assign_all_discord_role(self, ctx):
         try:
             for player in self.players:
-                if role not in player.member.roles:
+                if self.game_role not in player.member.roles:
                     await player.member.add_roles(*[self.game_role])
         except discord.Forbidden:
             await ctx.send("Unable to add role **{}**\nBot is missing `manage_roles` permissions".format(role.name))
             return False
         return True
 
-    async def assign_member_discord_role(self, member):
+    async def assign_member_discord_role(self, member, channel):
         try:
-            if role not in member.roles:
+            if self.game_role not in member.roles:
                 await member.add_roles(*[self.game_role])
         except discord.Forbidden:
             await channel.send("Unable to add role **{}**\nBot is missing `manage_roles` permissions".format(role.name))
@@ -219,7 +219,7 @@ class Game:
         """
         self.players.append(Player(member))
 
-        await self.assign_member_discord_role(member, channel, self.game_role) 
+        await self.assign_member_discord_role(member, channel) 
         
         embed = discord.Embed(description=member.mention+" has joined the game")
         await channel.send(embed=embed)
