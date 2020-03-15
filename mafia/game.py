@@ -102,7 +102,8 @@ class Game:
         if await self._check_game_over_status():
             return
      
-        if await self._new_round_prompt():
+        success = await self._new_round_prompt():
+        if success:
             await ctx.send("Continue Game")
         else:
             await ctx.send("End Game")
