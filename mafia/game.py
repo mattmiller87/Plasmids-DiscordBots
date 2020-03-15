@@ -266,17 +266,29 @@ class Game:
         return True
     
     async def _create_discord_role(self, ctx):
+        for role in ctx.guild.roles:
+            if "Mafia Players" == role.name:
+                self.game_role = role
+                
+                try:
+                    self.game_role.edit(mentionable=True,
+                                        reason="(BOT)Mafia Game Role")
+                    return
+                except (discord.Forbidden, discord.HTTPException):
+                    await ctx.send("Unable to edit discord role\nBot is missing `manage_roles` permisions")
+                    return False
+        
         try:
             self.game_role = await ctx.guild.create_role(name="Mafia Players",
                                                         mentionable=True,
                                                         reason="(BOT)Mafia Game Role")
         except (discord.Forbidden, discord.HTTPException):
-            await ctx.send("Unable to generate discord role, cannot start")
+            await ctx.send("Unable to create discord role\nBot is missing `manage_roles` permisions")
             return False  
         return True
 
     async def _create_category(self, ctx):
-        self.overwrite = {
+        overwrite = {
             self.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False,
                                                                  add_reactions=False),
             self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
@@ -285,9 +297,21 @@ class Game:
             self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
         }
 
+        for category in ctx.guild.categoies:
+            if "Rocket League Mafia" == category.name:
+                self.channel_category = category
+
+                try:
+                    self.channel_category.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
+                    return
+                except discord.Forbidden:
+                    await ctx.send("Unable to modify category **{}**\n"
+                                    "Bot is missing `manage_channels` permissions".format(self.channel_category.name))
+                    return False     
+
         try:
             self.channel_category = await self.guild.create_category("Rocket League Mafia",
-                                                                    overwrites=self.overwrite,
+                                                                    overwrites=overwrite,
                                                                     reason="(BOT)New Mafia game")
         except discord.Forbidden:
             await ctx.send("Unable to add category **{}**\n"
@@ -296,7 +320,7 @@ class Game:
         return True
 
     async def _create_channel(self, ctx):
-        self.overwrite = {
+        overwrite = {
             self.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False,
                                                                  add_reactions=False),
             self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
@@ -305,10 +329,22 @@ class Game:
             self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
         }
 
+        for channel in ctx.guild.text_channels:
+            if "village" == channel.name:
+                self.village_channel = channel
+                
+                try:
+                    self.village_channel.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
+                    return
+                except discord.Forbidden:
+                    await ctx.send("Unable to modify category **{}**\n"
+                                    "Bot is missing `manage_channels` permissions".format(self.channel_category.name))
+                    return False
+
         try:
             self.village_channel = await self.guild.create_text_channel("Village",
-                                                                        overwrites=self.overwrite,
-                                                                        reason="(BOT) New Mafia game",
+                                                                        overwrites=overwrite,
+                                                                        reason="(BOT) New Mafia Game",
                                                                         category=self.channel_category)
         except discord.Forbidden:
             await ctx.send("Unable to add channel **{}**\n"
