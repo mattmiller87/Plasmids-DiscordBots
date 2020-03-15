@@ -329,6 +329,8 @@ class Game:
         msg = await self.village_channel.send(embed=embed)
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
+        await asyncio.sleep(10)
+        
         pred = ReactionPredicate.yes_or_no(msg)
         return pred.result
 
