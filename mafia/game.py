@@ -102,12 +102,12 @@ class Game:
         if await self._check_game_over_status():
             return
 
-        await self._new_round_prompt()
-        # if start_new_round:
-            # await self.start(ctx)
-        # else:
-           # await self.cleanup()
-           # return
+        
+        if await self._new_round_prompt():
+            await self.start(ctx)
+        else:
+           await self.cleanup()
+           return
 
     
     async def join(self, member: discord.Member, channel: discord.TextChannel):
@@ -330,7 +330,7 @@ class Game:
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
         pred = ReactionPredicate.yes_or_no(msg)
-        return pred
+        return pred.result
 
     async def _check_game_over_status(self):
         if self.game_over:
