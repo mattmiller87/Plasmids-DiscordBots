@@ -102,9 +102,14 @@ class Game:
         if await self._check_game_over_status():
             return
      
-        success = await self._new_round_prompt()
-        
-        if success:
+        embed = discord.Embed(title="Would you like to contiue?")
+        embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
+
+        msg = await self.village_channel.send(embed=embed)
+        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+        pred = ReactionPredicate.yes_or_no(msg)
+        if pred.result:
             await ctx.send("Continue Game")
         else:
             await ctx.send("End Game")
@@ -321,16 +326,6 @@ class Game:
                                 "Bot is missing `manage_channels` permissions".format(self.channel_category.name))
             return False
         return True
-
-    async def _new_round_prompt(self):
-        embed = discord.Embed(title="Would you like to contiue?")
-        embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
-
-        msg = await self.village_channel.send(embed=embed)
-        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
-
-        pred = ReactionPredicate.yes_or_no(msg)
-        return pred.result
 
     async def _check_game_over_status(self):
         if self.game_over:
