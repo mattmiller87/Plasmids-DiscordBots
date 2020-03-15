@@ -53,7 +53,7 @@ class Game:
         await asyncio.sleep(30)
 
         # Assign Players in join_queue
-        if len(self.join_queue > 0):
+        if len(self.join_queue) > 0:
             for member in self.join_queue:
                 await self._join(member, self.village_channel)
             self.join_queue = []
