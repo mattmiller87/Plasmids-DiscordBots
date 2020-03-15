@@ -98,7 +98,10 @@ class Game:
         player = await self.get_player_by_member(member)
 
         self.players = [player for player in self.players if player.member != member]
-        await member.remove_roles(*[self.game_role])
+
+        if self.game_role is not None:
+            await member.remove_roles(*[self.game_role])
+        
         embed = discord.Embed(description=player.mention+" has left the game")
         await channel.send(embed=embed)
 
