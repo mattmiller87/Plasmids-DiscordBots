@@ -1,8 +1,6 @@
 import discord
 
 from redbot.core import Config, checks, commands
-from redbot.core.utils.predicates import ReactionPredicate
-from redbot.core.utils.menus import start_adding_reactions
 
 from typing import Any
 
@@ -100,6 +98,10 @@ class Mafia(Cog):
 
         if game is None:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
+            return
+
+        if len(game.players) == 0:
+            await ctx.send("No players to start the game!\n Join the game with `[p]mafia join`")
             return
         
         if game.game_over:

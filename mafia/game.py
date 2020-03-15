@@ -59,7 +59,7 @@ class Game:
         
         if not await self._add_queued_players(ctx):
             return False            
-        
+            
         self.started = True
 
         # Create and Assign Discord Role
