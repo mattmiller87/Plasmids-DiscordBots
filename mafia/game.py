@@ -56,7 +56,7 @@ class Game:
         # Assign Players in join_queue
         if len(self.join_queue) > 0:
             for member in self.join_queue:
-                await self._join(member, self.village_channel)
+                await self._join(member, ctx.channel)
             self.join_queue = []
         
         # Assign Roles
