@@ -74,7 +74,7 @@ class Game:
             return
 
         if self.started:
-            embed = discord.Embed(description="Game has already started. "+player.mention+" will be added at the start of the next round")
+            embed = discord.Embed(description="Game has already started. "+member.mention+" will be added at the start of the next round")
             await channel.send(embed=embed)
             self.join_queue.append(member)
             return
