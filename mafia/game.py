@@ -234,7 +234,7 @@ class Game:
         If no game_type game creates the roles based on number of players
         """
         self.roles = []
-        
+
         if game_type is None:
             for player_index in range(len(self.players)):
                 if player_index == len(self.players) - 1:
@@ -377,6 +377,8 @@ class Game:
         if self.game_over:
             return False
         
+        await msg.delete()
+
         return pred.result
 
     async def _check_game_over_status(self):
