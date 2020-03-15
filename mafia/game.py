@@ -242,7 +242,7 @@ class Game:
         self.players.sort(key=lambda player: player.member.display_name.lower())
 
         if len(roles) != len(self.players):
-            await self.village_channel.send("Unhandled error - roles!=players")
+            await self.village_channel.send("Unhandled error - {}!={}".format(len(roles), len(self.players)))
             return False
 
         for index, player in enumerate(self.players):
