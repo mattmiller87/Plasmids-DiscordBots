@@ -230,7 +230,7 @@ class Game:
         If no game_type game creates the roles based on number of players
         """
         if game_type is None:
-            for player_index in range(len(self.players)):
+            for player_index in range(len(self.players) - 1):
                 if player_index == len(self.players) - 1:
                     self.roles.append(Godfather())
                 else:
