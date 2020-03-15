@@ -22,15 +22,6 @@ class Game:
 
     def __init__(self, guild: discord.Guild):
         self.guild = guild
-        
-        self.overwrite = {
-            self.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False,
-                                                                 add_reactions=False),
-            self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
-                                                       manage_messages=True, manage_channels=True,
-                                                       manage_roles=True),
-            self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
-        }
 
         self.roles = []
         self.players = []
@@ -290,6 +281,15 @@ class Game:
         return True
 
     async def _create_category(self, ctx):
+        self.overwrite = {
+            self.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False,
+                                                                 add_reactions=False),
+            self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
+                                                       manage_messages=True, manage_channels=True,
+                                                       manage_roles=True),
+            self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+        }
+
         try:
             self.channel_category = await self.guild.create_category("Rocket League Mafia",
                                                                     overwrites=self.overwrite,
@@ -301,6 +301,15 @@ class Game:
         return True
 
     async def _create_channel(self, ctx):
+        self.overwrite = {
+            self.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False,
+                                                                 add_reactions=False),
+            self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
+                                                       manage_messages=True, manage_channels=True,
+                                                       manage_roles=True),
+            self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+        }
+
         try:
             self.village_channel = await self.guild.create_text_channel("Village",
                                                                         overwrites=self.overwrite,
