@@ -92,16 +92,20 @@ class Mafia(Cog):
     @mafia.command(name="start")
     async def mafia_start(self, ctx: commands.Context):
         """
-        Attempts to start the game. Restarts game if stopped
+        Attempts to start the game
         """
         game = await self._get_game(ctx)
 
-        if game is None or game.game_over:
+        if game is None:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
             return
-           
+        
+        if game.game_over:
+            game.game_over = False
 
-        await game.start(ctx)
+        if not await game.start(ctx):
+            await ctx.send("Unhandled Error - check previous messages for issues")
+            pass
 
     @commands.guild_only()
     @mafia.command(name="end")
@@ -116,8 +120,7 @@ class Mafia(Cog):
             return
 
         game.game_over = True
-        game.cleanup(ctx)
-        await ctx.send("Game has ended.\nYou can start a new game with `[p]mafia new`")
+        await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
 
     @commands.guild_only()
     @mafia.command(name="players")
