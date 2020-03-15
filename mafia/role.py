@@ -1,5 +1,6 @@
 class Role:
     alignment = 0  # 1: Town, 2: Mafia
+    name = "Default"
     game_start_message = (
         "Your role is **Default**\n"
         "You win by testing the game\n"
@@ -20,6 +21,7 @@ class Role:
 # Town Roles
 class Town(Role):
     alignment = 1  # 1: Town, 2: Mafia
+    name = "Town"
     game_start_message = (
         "Your role is **Villager**\n"
         "You win by determining who is the mafia\n"
@@ -32,6 +34,7 @@ class Town(Role):
 # Mafia Roles
 class Godfather(Role):
     alignment = 2  # 1: Town, 2: Mafia
+    name = "Mafia"
     game_start_message = (
         "Your role is **Mafia**\n"
         "You win by loosing the game\n"

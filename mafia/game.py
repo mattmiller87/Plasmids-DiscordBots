@@ -52,6 +52,7 @@ class Game:
             a. Send Roles
             b. Await Game End
             c. Vote on Mafia
+            d. Tally Points
         6. Remove Leaving Players
         """
         # Assign Players in join_queue
@@ -95,8 +96,9 @@ class Game:
             return False
 
         # Game Itself
-        if await self._check_game_over_status():
-            return
+        await self._check_game_over_status()
+
+        await self._start_round() # Send players the DM
         
         self.started = False
 
@@ -384,3 +386,6 @@ class Game:
     async def _check_game_over_status(self):
         if self.game_over:
             await self.cleanup()
+    
+    async def _start_round(self):
+        pass
