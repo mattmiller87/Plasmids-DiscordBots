@@ -273,7 +273,7 @@ class Game:
                 try:
                     await self.game_role.edit(mentionable=True,
                                         reason="(BOT)Mafia Game Role")
-                    return
+                    return True
                 except (discord.Forbidden, discord.HTTPException):
                     await ctx.send("Unable to edit discord role\nBot is missing `manage_roles` permisions")
                     return False
@@ -303,7 +303,7 @@ class Game:
 
                 try:
                     await self.channel_category.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
-                    return
+                    return True
                 except discord.Forbidden:
                     await ctx.send("Unable to modify category **{}**\n"
                                     "Bot is missing `manage_channels` permissions".format(self.channel_category.name))
@@ -335,7 +335,7 @@ class Game:
                 
                 try:
                     await self.village_channel.edit(overwrites=overwrite, reason="(BOT) New Mafia Game")
-                    return
+                    return True
                 except discord.Forbidden:
                     await ctx.send("Unable to modify category **{}**\n"
                                     "Bot is missing `manage_channels` permissions".format(self.channel_category.name))
