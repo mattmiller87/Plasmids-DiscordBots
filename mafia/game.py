@@ -102,8 +102,7 @@ class Game:
 
         await self._check_game_over_status()
 
-        if not await self._wait_for_game(ctx):
-            return False
+        await self._wait_for_game(ctx)
         
         self.started = False
 
@@ -412,5 +411,3 @@ class Game:
             return False
         
         await msg.delete()
-
-        return pred.result
