@@ -163,7 +163,9 @@ class Mafia(Cog):
         if guild.id not in self.games or self.games[guild.id].game_over:
             await ctx.send("Creating a new game...")
             self.games[guild.id] = Game(guild)
-        
+
+        self.games[guild.id].setup(ctx)
+
         return self.games[guild.id]
 
     
