@@ -20,8 +20,7 @@ class Mafia(Cog):
         default_guild = {
             "role_id": None,
             "category_id": None,
-            "channel_id": None,
-            "log_channel_id": None
+            "channel_id": None
         }
 
         self.config.register_global(**default_global)
@@ -49,7 +48,7 @@ class Mafia(Cog):
         Create new game to join
         """
         game = await self._new_game(ctx)
-        if not game:
+        if game is None:
             await ctx.send("Failed to create a new game")
         else:
             await ctx.send("Game is ready to join! Use `[p]mafia join`")

@@ -50,6 +50,7 @@ class Game:
             a. yes - start new round
             b. no - clean up
         """
+        await ctx.send("start game")
 
     async def join(self, member: discord.Member, channel: discord.TextChannel):
         """
