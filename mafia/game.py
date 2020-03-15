@@ -79,7 +79,7 @@ class Game:
         player = await self.get_player_by_member(member)
 
         if player is None:
-            embed = discord.Embed(description=player.mention+" isn't in the game")
+            embed = discord.Embed(description=member.mention+" isn't in the game")
             await channel.send(embed=embed)
             return
 
