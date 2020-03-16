@@ -1,134 +1,185 @@
-from redbot.core import commands, config, utils
 import discord
 import asyncio
 
-class Mafia(commands.Cog):
-    """My custom cog"""
+from redbot.core import Config, checks, commands
+from redbot.core.utils.predicates import ReactionPredicate
+from redbot.core.utils.menus import start_adding_reactions
 
-    @commands.group()
-    async def mafia(self, ctx):
-        """This is Mafia"""
+from typing import Any
 
-    @mafia.command()
-    async def join(self, ctx):
-        """Join Mafia Game"""
-        user = ctx.author
-        role_mafia = await self.get_mafia_role(ctx)
-        
-        for role in user.roles:
-            if role.name == "Mafia":
-                await ctx.send("You are already in the game.")
-                return
+from .game import Game
 
-        await user.add_roles(role_mafia)
+Cog: Any = getattr(commands, "Cog", object)
 
-        await ctx.send("You have joined the mafia game!")
+class Mafia(Cog):
+    """
+    Main to host Rocket Leauge Mafia on guild
+    """
 
-    @mafia.command()
-    async def leave(self, ctx):
-        """Leave Mafia Game"""
-
-        user = ctx.author
-        await self.remove_mafia_role(ctx)
-
-        embed = discord.Embed(description=user.mention+" has left the game")
-        await ctx.send(embed=embed)
-
-    @mafia.command()
-    async def start(self, ctx, gamemode = "standard"):
-        """Start Mafia Game"""
-        
-        if len(await self.get_mafia_players(ctx)) == 0:
-            await ctx.send("There are no players currently playing. Unable to start the round.")
-            return
-
-        await self.start_round(ctx, gamemode=gamemode)    
-
-    @mafia.command()
-    async def end(self, ctx):
-        """End Mafia Game"""
-        channel_mafia = await self.get_mafia_channel(ctx)
-        role_mafia = await self.get_mafia_role(ctx)
-
-        if channel_mafia is not None:
-            await channel_mafia.delete()
-
-        for user in await self.get_mafia_players(ctx):
-            await self.remove_mafia_role(ctx, user=user)
-
-        await role_mafia.delete()
-
-        embed = discord.Embed(description="The game has ended", color=0xF50202)
-        await ctx.send(embed=embed)
-
-    async def get_mafia_role(self, ctx):
-        guild = ctx.guild
-
-        for role in guild.roles:
-            if role.name == "Mafia":
-                return role
-
-        role_mafia = await guild.create_role(name="Mafia")
-
-        return role_mafia
-
-    async def get_mafia_channel(self, ctx):
-        guild = ctx.guild
-        role_mafia = await self.get_mafia_role(ctx)
-
-        for channel in guild.text_channels:
-            if channel.name == "mafia":
-                return channel
-
-        overwrites = {
-            guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            role_mafia: discord.PermissionOverwrite(read_messages=True),
-            role_mafia: discord.PermissionOverwrite(send_messages=True)
+    def __init__(self):
+        self.config = Config.get_conf(self, identifier=926792766, force_registration=True)
+        default_global = {}
+        default_guild = {
+            "role_id": None,
+            "category_id": None,
+            "channel_id": None
         }
 
-        channel_mafia = await guild.create_text_channel("mafia", overwrites=overwrites)
+        self.config.register_global(**default_global)
+        self.config.register_guild(**default_guild)
+
+        self.games = {}
+
+    def __unload(self):
+        print("Unload called")
+        for game in self.games.values():
+            del game
+    
+    @commands.group()
+    async def mafia(self, ctx: commands.Context):
+        """
+        Base command for cog
+        """
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @commands.guild_only()
+    @mafia.command(name="new")
+    async def mafia_new(self, ctx: commands.Context):
+        """
+        Create new game to join
+        """
+        game = await self._new_game(ctx)
+
+        if game is None:
+            await ctx.send("Failed to create a new game")
+        elif game.started:
+            await ctx.send("Game is in progress! To join use `[p]mafia join`\n"
+                            "You will be added at the start of the next round")
+        else:
+            await ctx.send("Game is ready to join! You can join with `[p]mafia join`")
+
+    @commands.guild_only()
+    @mafia.command(name="join")
+    async def mafia_join(self, ctx: commands.Context):
+        """
+        Joins a game of Mafia
+        """   
+        game = await self._get_game(ctx)
+
+        if game is None:
+            await ctx.send("No game to join!\nCreate a new one with `[p]mafia new`")
+            return
+
+        await game.join(ctx.author, ctx.channel)
+
+    @commands.guild_only()
+    @mafia.command(name="leave")
+    async def mafia_quit(self, ctx: commands.Context, member:discord.Member=None):
+        """
+        Quit a game of Mafia
+        """
+        game = await self._get_game(ctx)
+
+        if game is None:
+            await ctx.send("No game to quit!")
+            return
         
-        return channel_mafia
+        if member is None:
+            await game.leave(ctx.author, ctx.channel)
+        else:
+            await game.leave(member, ctx.channel)
 
-    async def remove_mafia_role(self, ctx, user: discord.Member = None):
-        if user is None:
-            user = ctx.author
-        role = await self.get_mafia_role(ctx)
+    @commands.guild_only()
+    @mafia.command(name="start")
+    async def mafia_start(self, ctx: commands.Context):
+        """
+        Attempts to start the game
+        """
+        game = await self._get_game(ctx)
 
-        if role in user.roles:
-            await user.remove_roles(role)
+        if game is None:
+            await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
+            return
 
-    async def get_mafia_players(self, ctx):
-        guild = ctx.guild
-        role_mafia = await self.get_mafia_role(ctx)
-        current_players = []
-        
-        for user in guild.members:
-            if role_mafia in user.roles:
-                current_players.append(user)
+        if not await game.start(ctx):
+            await ctx.send("Unhandled Error - check previous messages for issues")
+            return
 
-        return current_players
-        
-    async def start_round(self, ctx, gamemode):
-        user = ctx.author
-        channel_mafia = await self.get_mafia_channel(ctx)
-        current_players = await self.get_mafia_players(ctx)
-        current_players_mention = " "
-        emojis = ["😀", "☹️"]
+    @commands.guild_only()
+    @mafia.command(name="end")
+    async def mafia_end(self, ctx: commands.Context):
+        """
+        Attempts to end the game
+        """
+        game = await self._get_game(ctx)
 
-        for user in current_players:
-            current_players_mention = current_players_mention + user.mention + " "
+        if game is None:
+            await ctx.send("No game to end!")
+            return
 
-        embed = discord.Embed(title="Mafia Game", description="This is the start of your "+gamemode+" game", color=0xF50202)
-        embed.add_field(name="Current Players: ", value=current_players_mention, inline=True)
-        
-        await channel_mafia.send("@Mafia", embed=embed)
+        if game.started:
+            embed = discord.Embed(title="There is a game in progress are you sure you want to end the game?")
+            embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
 
-        message = await channel_mafia.send("test")
-        utils.menus.start_adding_reactions(message, emojis)
+            msg = await game.village_channel.send(embed=embed)
+            start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
-        pred = utils.predicates.ReactionPredicate.with_emojis(emojis=emojis, message=message, user=user)
-        await ctx.bot.wait_for("reaction_add", check=pred)
-        if pred.result is 1:
-            await channel_mafia.send("SadFace")
+            pred = ReactionPredicate.yes_or_no(msg)
+            await ctx.bot.wait_for("reaction_add", check=pred)
 
+            if pred.result:
+                game.game_over = True
+                await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
+            else:
+                await ctx.send("Game has not been stopped.")
+        elif game.game_over:
+            await ctx.send("Game is already stopped.")
+        else:
+            game.game_over = True
+            await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
+
+    @commands.guild_only()
+    @mafia.command(name="players")
+    async def mafia_players(self, ctx: commands.Context):
+        """
+        Get Players of current game
+        """
+        string_mention = " "
+        game = await self._get_game(ctx)
+
+        for player in game.players:
+            string_mention = string_mention + player.mention + " "
+
+        embed = discord.Embed(title="Players in the game", description=string_mention)
+        await ctx.send(embed=embed)
+    async def _get_game(self, ctx: commands.Context):
+        """
+        Get game from current guild
+        """
+        guild: discord.Guild = ctx.guild
+
+        if guild is None:
+            await ctx.send("Cannot do this command from PM!")
+            return None
+        if guild.id not in self.games:
+            return None
+
+        return self.games[guild.id]
+
+    async def _new_game(self, ctx: commands.Context):
+        """
+        New game for current guild
+        """
+        guild: discord.Guild = ctx.guild
+
+        if guild is None:
+            await ctx.send("Cannot create new game from PM!")
+            return None
+        if guild.id not in self.games or self.games[guild.id].game_over:
+            await ctx.send("Creating a new game...")
+            self.games[guild.id] = Game(guild)
+
+        return self.games[guild.id]
+
+    
