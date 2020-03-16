@@ -399,7 +399,7 @@ class Game:
         embed.add_field(name="Mafia's Objective", value="Lose the game without getting caught", inline=False)
 
         await self.village_channel.send(self.game_role.mention, embed=embed)
-        await asyncio.sleep(1) # Remember to revert to 5
+        await asyncio.sleep(5)
 
         tasks = []
         for player in self.players:
@@ -436,7 +436,7 @@ class Game:
 
         start_adding_reactions(msg, emoji_list)
 
-        for time in range(3, -1, -1):  #Reset to 14
+        for time in range(14, -1, -1):
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
