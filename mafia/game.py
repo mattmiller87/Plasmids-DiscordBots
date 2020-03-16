@@ -425,13 +425,18 @@ class Game:
                              description="Vote for who you think it is with the corresponding emoji")
         
         player_list = " "
+        emoji_list = []
         for index, player in enumerate(self.players):
             player_list = player_list + str(index + 1) + ". " + player.mention + "\n"
+            if index < 9:
+                emoji_list.append(ReactionPredicate.NUMBER_EMOJIS[index+1])
 
         embed.add_field(name="Players", value=player_list, inline=True)
         embed.add_field(name="You have 15 seconds to vote: ", value="15", inline=False)
 
         msg = await self.village_channel.send(embed=embed)
+
+        await msg.add_reaction(*[emoji_list])
 
         for time in range(14, -1, -1):  
             await asyncio.sleep(1)
@@ -439,7 +444,7 @@ class Game:
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
             
-            
+        await msg.delete()    
 
     async def _end_round(self, ctx):
         pass
