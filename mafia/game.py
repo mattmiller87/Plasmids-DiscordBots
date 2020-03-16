@@ -361,7 +361,7 @@ class Game:
 
     async def _prompt_new_game(self, ctx):
         embed = discord.Embed(title="Would you like to continue?")
-        embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
+        embed.add_field(name="Select an Option",value="Click ✅ for yes\nClick ❎ for no")
 
         msg = await self.village_channel.send(embed=embed)
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
