@@ -401,10 +401,6 @@ class Game:
 
         pred = ReactionPredicate.with_emojis(emojis="🏁", message=msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
-        
-        if self.game_over():
-            await self.cleanup()
-            return
  
         await msg.delete()
 
@@ -427,9 +423,6 @@ class Game:
         start_adding_reactions(msg, emoji_list)
 
         for time in range(14, -1, -1):
-            if self.game_over():
-                await self.cleanup()
-                return
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
