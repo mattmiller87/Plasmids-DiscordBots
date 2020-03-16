@@ -420,10 +420,14 @@ class Game:
         await msg.delete()
 
     async def _vote_mafia(self, ctx):
-        embed = discord.Embed(title="Who do you think is mafia?", description="Vote for who you think it is with the corresponding emoji")
+        embed = discord.Embed(title="Who do you think is mafia?",
+                             description="Vote for who you think it is with the corresponding emoji")
+        
+        player_list = " "
         for index, player in enumerate(self.players):
-            embed.add_field(name="Player", value=str(index+1)+". "+player.mention, inline=True)
+            player_list = player_list + str(index + 1) + player.mention + "\n"
 
+        embed.add_field(name="Players", value=player_list, inline=True)
         await self.village_channel.send(embed=embed)
 
     async def _end_round(self, ctx):
