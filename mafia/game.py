@@ -442,9 +442,7 @@ class Game:
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
 
-        # TODO: Total up Reactions
- 
-        await msg.delete()    
+        # TODO: Total up Reactions   
 
     async def _end_round(self, ctx):
         mafia_players = await self._get_mafia_players()
