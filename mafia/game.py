@@ -107,7 +107,7 @@ class Game:
         await self._vote_mafia(ctx) # Vote on Mafia
 
         await self._check_game_over_status()
-        
+
         await self._end_round(ctx) # Display Mafia and Tally Points 
         
         self.started = False
@@ -443,7 +443,15 @@ class Game:
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
-            
+        
+        votes = msg.reactions
+
+        for index, player_vote in enumerate(votes):
+            self.vote_totals[self.players[index]] = player_vote.count - 1
+            await self.village_channel.send(self.players[index].mention + " " + str(player_vote.count - 1)) 
+
+        
+
         await msg.delete()    
 
     async def _end_round(self, ctx):
