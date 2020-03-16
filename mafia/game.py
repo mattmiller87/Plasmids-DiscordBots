@@ -446,7 +446,7 @@ class Game:
         
         votes = msg.reactions
 
-        await self.village_channel.send(str(votes[0].count)) 
+        await self.village_channel.send(str(votes)) 
 
         
 
