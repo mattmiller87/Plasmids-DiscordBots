@@ -408,6 +408,8 @@ class Game:
         await asyncio.gather(*tasks)
 
     async def _wait_for_game(self, ctx):
+        # TODO: Seperate Teams
+
         embed = discord.Embed(title="Respond with the 🏁 when the game is done")
 
         msg = await self.village_channel.send(embed=embed)
