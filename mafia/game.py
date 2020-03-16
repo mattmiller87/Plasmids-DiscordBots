@@ -429,15 +429,15 @@ class Game:
             player_list = player_list + str(index + 1) + ". " + player.mention + "\n"
 
         embed.add_field(name="Players", value=player_list, inline=True)
-        embed.add_field(name="You have 15 seconds to vote: ", value="15")
+        embed.add_field(name="You have 15 seconds to vote: ", value="15", inline=False)
 
         msg = await self.village_channel.send(embed=embed)
 
         for time in range(15, 1, -1):
-            embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time))
+            embed.remove_field(1)
+            embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
-        
-        await self.village_channel.send(embed=embed)
+            await asyncio.sleep(1)
 
     async def _end_round(self, ctx):
         pass
