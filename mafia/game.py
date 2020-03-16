@@ -438,7 +438,7 @@ class Game:
 
         start_adding_reactions(msg, emoji_list)
 
-        for time in range(14, -1, -1):  
+        for time in range(3, -1, -1):  #Reset to 14
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
