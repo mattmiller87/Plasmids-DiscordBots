@@ -54,8 +54,6 @@ class Game:
         6. Remove Leaving Players
         """
         # Assign Players in join_queue
-        await self._check_game_over_status()
-
         self.game_over = False
         
         if not await self._add_queued_players(ctx):
@@ -108,6 +106,8 @@ class Game:
 
         await self._vote_mafia(ctx) # Vote on Mafia
 
+        await self._check_game_over_status()
+        
         await self._end_round(ctx) # Display Mafia and Tally Points 
         
         self.started = False
