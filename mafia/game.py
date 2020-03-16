@@ -443,10 +443,8 @@ class Game:
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
-        
-        votes = msg.reactions
 
-        await self.village_channel.send(str(votes)) 
+        await self.village_channel.send(str(msg.reactions)) 
 
         
 
