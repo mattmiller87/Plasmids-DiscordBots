@@ -315,7 +315,7 @@ class Game:
                                                                  add_reactions=False),
             self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
                                                        manage_messages=True, manage_channels=True,
-                                                       manage_roles=True),
+                                                       manage_roles=True, read_message_history=True),
             self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
         }
 
@@ -347,7 +347,7 @@ class Game:
                                                                  add_reactions=False),
             self.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True, add_reactions=True,
                                                        manage_messages=True, manage_channels=True,
-                                                       manage_roles=True),
+                                                       manage_roles=True, read_message_history=True),
             self.game_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
         }
 
