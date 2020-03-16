@@ -398,7 +398,7 @@ class Game:
     async def _start_round(self):
         embed = discord.Embed(title="Welcome To Rocket League Mafia")
         embed.add_field(name="Town's Objective", value="Find the mafia player", inline=False)
-        embed.add_field(name="Mafia's Objective", value="Lose the Game without getting caught", inline=False)
+        embed.add_field(name="Mafia's Objective", value="Lose the game without getting caught", inline=False)
 
         await self.village_channel.send(self.game_role.mention, embed=embed)
 
@@ -420,7 +420,11 @@ class Game:
         await msg.delete()
 
     async def _vote_mafia(self, ctx):
-        pass
+        embed = discord.Embed(title="Who do you think is mafia?")
+        for index, player in self.players:
+            embed.add_field(name="", value=index+". "+player.mention, inline=False)
 
+        await self.village_channel.send(embed=embed)
+        
     async def _end_round(self, ctx):
         pass
