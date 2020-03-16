@@ -425,7 +425,7 @@ class Game:
         
         player_list = " "
         for index, player in enumerate(self.players):
-            player_list = player_list + str(index + 1) + player.mention + "\n"
+            player_list = player_list + str(index + 1) + ". " + player.mention + "\n"
 
         embed.add_field(name="Players", value=player_list, inline=True)
         await self.village_channel.send(embed=embed)
