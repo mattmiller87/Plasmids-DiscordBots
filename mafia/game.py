@@ -436,7 +436,7 @@ class Game:
 
         msg = await self.village_channel.send(embed=embed)
 
-        await msg.add_reaction(*[emoji_list])
+        start_adding_reactions(msg, emoji_list)
 
         for time in range(14, -1, -1):  
             await asyncio.sleep(1)
