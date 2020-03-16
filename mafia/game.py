@@ -422,7 +422,7 @@ class Game:
     async def _vote_mafia(self, ctx):
         embed = discord.Embed(title="Who do you think is mafia?")
         for index, player in enumerate(self.players):
-            embed.add_field(name="", value=index+". "+player.mention, inline=False)
+            embed.add_field(name="", value=str(index)+". "+player.mention, inline=False)
 
         await self.village_channel.send(embed=embed)
 
