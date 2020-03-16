@@ -446,9 +446,7 @@ class Game:
         
         votes = msg.reactions
 
-        for index, player_vote in enumerate(votes):
-            self.vote_totals[self.players[index]] = player_vote.count - 1
-            await self.village_channel.send(self.players[index].mention + " " + str(player_vote.count - 1)) 
+        await self.village_channel.send(str(votes[0].count)) 
 
         
 
