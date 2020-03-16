@@ -444,7 +444,12 @@ class Game:
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
 
-        await self.village_channel.send(str(msg.reactions)) 
+
+        reaction_list = msg.reactions
+
+        up_votes = sum(p for p in reaction_list if p.emoji == ReactionPredicate.NUMBER_EMOJIS[1] and not p.me)
+
+        await self.village_channel.send(str(up_votes)) 
 
         
 
