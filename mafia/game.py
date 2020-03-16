@@ -447,9 +447,10 @@ class Game:
 
         reaction_list = msg.reactions
 
-        up_votes = sum(p for p in reaction_list if p.emoji == ReactionPredicate.NUMBER_EMOJIS[1] and not p.me)
-
-        await self.village_channel.send(str(up_votes)) 
+        for p in reaction_list:
+            if p.emoji == ReactionPredicate.NUMBER_EMOJIS[1]:
+                await self.village_channel.send(p.emoji)
+ 
 
         
 
