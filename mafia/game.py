@@ -433,11 +433,13 @@ class Game:
 
         msg = await self.village_channel.send(embed=embed)
 
-        for time in range(15, 1, -1):
+        for time in range(14, 0, -1):  
+            await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
             await msg.edit(embed=embed)
-            await asyncio.sleep(1)
+            
+            
 
     async def _end_round(self, ctx):
         pass
