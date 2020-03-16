@@ -102,9 +102,6 @@ class Mafia(Cog):
         if game is None:
             await ctx.send("No game to start!\nCreate a new one with `[p]mafia new`")
             return
-        
-        if game.game_over:
-            game.game_over = False
 
         if not await game.start(ctx):
             await ctx.send("Unhandled Error - check previous messages for issues")

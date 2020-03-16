@@ -32,8 +32,6 @@ class Game:
 
         self.started = False
         self.game_over = False
-        self.can_vote = False
-        self.round_count = 0
 
         self.game_role = None
         self.channel_category = None
@@ -57,6 +55,8 @@ class Game:
         """
         # Assign Players in join_queue
         await self._check_game_over_status()
+
+        self.game_over = False
         
         if not await self._add_queued_players(ctx):
             return False            
@@ -102,7 +102,13 @@ class Game:
 
         await self._check_game_over_status()
 
-        await self._wait_for_game(ctx)
+        await self._wait_for_game(ctx) # Wait for RL Game to Finish
+
+        await self._check_game_over_status()
+
+        await self._vote_mafia(ctx) # Vote on Mafia
+
+        await self._end_round(ctx) # Display Mafia and Tally Points 
         
         self.started = False
 
@@ -204,8 +210,6 @@ class Game:
 
         self.started = False
         self.game_over = True
-        self.can_vote = False
-        self.round_count = 0
 
         self.game_role = None
         self.channel_category = None
@@ -392,6 +396,12 @@ class Game:
             await self.cleanup()
     
     async def _start_round(self):
+        embed = discord.Embed(title="Welcome To Rocket League Mafia")
+        embed.add_field(name="Town's Objective", value="Find the mafia player")
+        embed.add_field(name="Mafia's Objective", value="Lose the Game without getting caught")
+
+        await self.village_channel.send(self.game_role.mention, embed=embed)
+
         tasks = []
         for player in self.players:
             tasks.append(asyncio.create_task(player._start_round()))
@@ -407,7 +417,10 @@ class Game:
         pred = ReactionPredicate.with_emojis(emojis="🏁", message=msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
         
-        if self.game_over:
-            return False
-        
         await msg.delete()
+
+    async def _vote_mafia(self, ctx):
+        pass
+
+    async def _end_round(self, ctx):
+        pass
