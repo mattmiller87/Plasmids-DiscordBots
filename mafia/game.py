@@ -106,8 +106,6 @@ class Game:
 
         await self._vote_mafia(ctx) # Vote on Mafia
 
-        await self._check_game_over_status()
-
         await self._end_round(ctx) # Display Mafia and Tally Points 
         
         self.started = False
@@ -442,13 +440,29 @@ class Game:
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
-            # await msg.edit(embed=embed)
+            await msg.edit(embed=embed)
 
-        reaction_list = msg.reactions
-
-        await self.village_channel.send(str(reaction_list))
+        # TODO: Total up Reactions
  
         await msg.delete()    
 
     async def _end_round(self, ctx):
-        pass
+        mafia_players = await self._get_mafia_players()
+        player_mention = " "
+
+        for player in mafia_players:
+            player_mention = player_mention + player.mention + " "
+        
+        embed = discord.Embed(title="The Mafia Was...",
+                              description=player_mention)
+
+        await self.village_channel.send(embed=embed)
+
+        # TODO: Score Points and Display
+
+    async def _get_mafia_players(self):
+        mafia_players = []
+        for player in self.players:
+            if player.role.alignment == 2:
+                mafia_players.append(player)
+        return mafia_players
