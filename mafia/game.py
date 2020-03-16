@@ -401,6 +401,7 @@ class Game:
         embed.add_field(name="Mafia's Objective", value="Lose the game without getting caught", inline=False)
 
         await self.village_channel.send(self.game_role.mention, embed=embed)
+        await asyncio.sleep(1) # Remember to revert to 5
 
         tasks = []
         for player in self.players:
@@ -428,6 +429,14 @@ class Game:
             player_list = player_list + str(index + 1) + ". " + player.mention + "\n"
 
         embed.add_field(name="Players", value=player_list, inline=True)
+        embed.add_field(name="You have 15 seconds to vote: ", value="15")
+
+        msg = await self.village_channel.send(embed=embed)
+
+        for time in range(15, 1, -1):
+            embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time))
+            await msg.edit(embed=embed)
+        
         await self.village_channel.send(embed=embed)
 
     async def _end_round(self, ctx):
