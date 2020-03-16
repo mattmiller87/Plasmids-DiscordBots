@@ -397,8 +397,8 @@ class Game:
     
     async def _start_round(self):
         embed = discord.Embed(title="Welcome To Rocket League Mafia")
-        embed.add_field(name="Town's Objective", value="Find the mafia player", inline=True)
-        embed.add_field(name="Mafia's Objective", value="Lose the Game without getting caught", inline=True)
+        embed.add_field(name="Town's Objective", value="Find the mafia player\n", inline=True)
+        embed.add_field(name="Mafia's Objective", value="Lose the Game without getting caught\n", inline=True)
 
         await self.village_channel.send(self.game_role.mention, embed=embed)
 
