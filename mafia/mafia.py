@@ -122,7 +122,7 @@ class Mafia(Cog):
             embed = discord.Embed(title="There is a game in progress are you sure you want to end the game?")
             embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
 
-            msg = await game.village_channel.send(embed=embed)
+            msg = await ctx.send(embed=embed)
             start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
             pred = ReactionPredicate.yes_or_no(msg)
@@ -137,7 +137,6 @@ class Mafia(Cog):
             await ctx.send("Game is already stopped.")
         else:
             game.game_over = True
-            await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
 
     @commands.guild_only()
     @mafia.command(name="players")

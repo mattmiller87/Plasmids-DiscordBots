@@ -193,6 +193,8 @@ class Game:
         return True
 
     async def cleanup(self):
+        await self.village_channel.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
+        
         # Delete Discord stuff
         await self.game_role.delete(reason="(BOT) Mafia Game Has Ended")
         await self.village_channel.delete(reason="(BOT) Mafia Game Has Ended")
@@ -383,6 +385,7 @@ class Game:
         await ctx.bot.wait_for("reaction_add", check=pred)
         
         if self.game_over:
+
             return False
         
         await msg.delete()
@@ -418,6 +421,10 @@ class Game:
         pred = ReactionPredicate.with_emojis(emojis="🏁", message=msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
         
+        if self.game_over():
+            await self.cleanup()
+            return
+ 
         await msg.delete()
 
     async def _vote_mafia(self, ctx):
@@ -439,6 +446,9 @@ class Game:
         start_adding_reactions(msg, emoji_list)
 
         for time in range(14, -1, -1):
+            if self.game_over():
+                await self.cleanup()
+                return
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
