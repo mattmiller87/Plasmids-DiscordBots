@@ -60,11 +60,7 @@ class Game:
             return False            
             
         if len(self.players) == 0:
-            if self.village_channel is not None:
-                await self.village_channel.send("No players to start the game!\n"
-                                                "Join the game with `[p]mafia join`")
-            else:
-                await ctx.send("No players to start the game!\nJoin the game with `[p]mafia join`")
+            await ctx.send("No players to start the game!\nJoin the game with `[p]mafia join`")
             return True
         
         self.started = True
@@ -94,15 +90,9 @@ class Game:
             return False
 
         # Game Itself
-        await self._check_game_over_status()
-
         await self._start_round() # Send players the DM
 
-        await self._check_game_over_status()
-
         await self._wait_for_game(ctx) # Wait for RL Game to Finish
-
-        await self._check_game_over_status()
 
         await self._vote_mafia(ctx) # Vote on Mafia
 
@@ -113,8 +103,6 @@ class Game:
         # Remove Leaving Players
         if not await self._remove_leaving_players(ctx):
             return False
-
-        await self._check_game_over_status()
         
         if await self._prompt_new_game(ctx):
             await self.start(ctx)
@@ -193,8 +181,6 @@ class Game:
         return True
 
     async def cleanup(self):
-        await self.village_channel.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
-        
         # Delete Discord stuff
         await self.game_role.delete(reason="(BOT) Mafia Game Has Ended")
         await self.village_channel.delete(reason="(BOT) Mafia Game Has Ended")
@@ -209,7 +195,6 @@ class Game:
         self.vote_totals = {}
 
         self.started = False
-        self.game_over = True
 
         self.game_role = None
         self.channel_category = None
@@ -383,10 +368,6 @@ class Game:
 
         pred = ReactionPredicate.yes_or_no(msg)
         await ctx.bot.wait_for("reaction_add", check=pred)
-        
-        if self.game_over:
-
-            return False
         
         await msg.delete()
 

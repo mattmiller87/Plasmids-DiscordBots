@@ -106,37 +106,13 @@ class Mafia(Cog):
             await ctx.send("Unhandled Error - check previous messages for issues")
             return
 
-    @commands.guild_only()
-    @mafia.command(name="end")
-    async def mafia_end(self, ctx: commands.Context):
-        """
-        Attempts to end the game
-        """
-        game = await self._get_game(ctx)
-
-        if game is None:
-            await ctx.send("No game to end!")
-            return
-
-        if game.started:
-            embed = discord.Embed(title="There is a game in progress are you sure you want to end the game?")
-            embed.add_field(name="Select an Option",value="Click `✅` for yes\nClick `❎` for no")
-
-            msg = await ctx.send(embed=embed)
-            start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
-
-            pred = ReactionPredicate.yes_or_no(msg)
-            await ctx.bot.wait_for("reaction_add", check=pred)
-
-            if pred.result:
-                game.game_over = True
-                await ctx.send("Game has ended.\nYou can start the game again with `[p]mafia start`")
-            else:
-                await ctx.send("Game has not been stopped.")
-        elif game.game_over:
-            await ctx.send("Game is already stopped.")
-        else:
-            game.game_over = True
+# TODO: Need to find a good way to do this
+#    @commands.guild_only()
+#    @mafia.command(name="end")
+#    async def mafia_end(self, ctx: commands.Context):
+#        """
+#        Attempts to end the game
+#        """
 
     @commands.guild_only()
     @mafia.command(name="players")

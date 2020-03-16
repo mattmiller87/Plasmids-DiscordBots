@@ -1,6 +1,7 @@
 class Role:
     alignment = 0  # 1: Town, 2: Mafia
     name = "Default"
+    color = 9807270 # Grey
     game_start_message = (
         "Your role is **Default**\n"
         "You win by testing the game\n"
@@ -21,6 +22,7 @@ class Role:
 # Town Roles
 class Town(Role):
     alignment = 1  # 1: Town, 2: Mafia
+    color = 3066993 # Green
     name = "Town"
     game_start_message = (
         "Your role is **Villager**\n"
@@ -34,6 +36,7 @@ class Town(Role):
 # Mafia Roles
 class Godfather(Role):
     alignment = 2  # 1: Town, 2: Mafia
+    color = 15158332 # Red
     name = "Mafia"
     game_start_message = (
         "Your role is **Mafia**\n"

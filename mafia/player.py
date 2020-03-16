@@ -29,16 +29,8 @@ class Player:
             await self.role.game.village_channel.send("Couldn't DM to {}".format(self.mention))
     
     async def _start_round(self):
-
-        if self.role.alignment == 1:
-            color = 3066993
-        elif self.role.alignment == 2:
-            color = 15158332
-        else:
-            color = 9807270
-
         embed = discord.Embed(title="You are " + self.role.name,
                             description=self.role.game_start_message,
-                            color=color)
+                            color=self.role.color)
 
         await self.send_dm(embed)
