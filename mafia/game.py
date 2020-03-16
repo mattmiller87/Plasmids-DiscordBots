@@ -447,13 +447,8 @@ class Game:
 
         reaction_list = msg.reactions
 
-        for p in reaction_list:
-            if p.emoji == ReactionPredicate.NUMBER_EMOJIS[1]:
-                await self.village_channel.send(p.emoji)
+        await self.village_channel.send(str(reaction_list))
  
-
-        
-
         await msg.delete()    
 
     async def _end_round(self, ctx):
