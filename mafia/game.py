@@ -442,8 +442,7 @@ class Game:
             await asyncio.sleep(1)
             embed.remove_field(1)
             embed.insert_field_at(1, name="You have 15 seconds to vote: ", value=str(time), inline=False)
-            await msg.edit(embed=embed)
-
+            # await msg.edit(embed=embed)
 
         reaction_list = msg.reactions
 
