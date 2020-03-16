@@ -153,6 +153,7 @@ class Mafia(Cog):
 
         embed = discord.Embed(title="Players in the game", description=string_mention)
         await ctx.send(embed=embed)
+        
     async def _get_game(self, ctx: commands.Context):
         """
         Get game from current guild
